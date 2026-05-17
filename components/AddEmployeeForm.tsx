@@ -98,7 +98,7 @@ export function AddEmployeeForm({ onClose }: AddEmployeeFormProps) {
         type="button"
         onClick={handleAddEmployeeClick}
         aria-haspopup="dialog"
-        className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 font-medium text-primary-foreground transition-colors hover:bg-primary/90 sm:w-auto"
+        className="flex w-full min-w-[260px] cursor-pointer items-center justify-center gap-2 rounded-lg bg-primary px-8 py-2 font-medium text-primary-foreground transition-colors hover:bg-primary/90 sm:w-auto"
       >
         <Plus className="h-4 w-4" />
         Add Employee
@@ -147,14 +147,19 @@ export function AddEmployeeForm({ onClose }: AddEmployeeFormProps) {
                 onChange={(e) => handleInputChange("name", e.target.value)}
                 placeholder="John Doe"
                 aria-invalid={Boolean(errors.name)}
-                aria-describedby={errors.name ? "employee-name-error" : undefined}
+                aria-describedby={
+                  errors.name ? "employee-name-error" : undefined
+                }
                 className={cn(
                   "w-full px-3 py-2 bg-background border rounded-lg text-sm focus:outline-none focus:border-primary transition-colors",
                   errors.name && "border-red-500",
                 )}
               />
               {errors.name && (
-                <p id="employee-name-error" className="text-xs text-red-400 mt-1">
+                <p
+                  id="employee-name-error"
+                  className="text-xs text-red-400 mt-1"
+                >
                   {errors.name}
                 </p>
               )}
@@ -174,14 +179,19 @@ export function AddEmployeeForm({ onClose }: AddEmployeeFormProps) {
                 onChange={(e) => handleInputChange("email", e.target.value)}
                 placeholder="john@example.com"
                 aria-invalid={Boolean(errors.email)}
-                aria-describedby={errors.email ? "employee-email-error" : undefined}
+                aria-describedby={
+                  errors.email ? "employee-email-error" : undefined
+                }
                 className={cn(
                   "w-full px-3 py-2 bg-background border rounded-lg text-sm focus:outline-none focus:border-primary transition-colors",
                   errors.email && "border-red-500",
                 )}
               />
               {errors.email && (
-                <p id="employee-email-error" className="text-xs text-red-400 mt-1">
+                <p
+                  id="employee-email-error"
+                  className="text-xs text-red-400 mt-1"
+                >
                   {errors.email}
                 </p>
               )}
@@ -268,7 +278,10 @@ export function AddEmployeeForm({ onClose }: AddEmployeeFormProps) {
                 )}
               />
               {errors.salary && (
-                <p id="employee-salary-error" className="text-xs text-red-400 mt-1">
+                <p
+                  id="employee-salary-error"
+                  className="text-xs text-red-400 mt-1"
+                >
                   {errors.salary}
                 </p>
               )}
