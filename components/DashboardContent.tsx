@@ -23,20 +23,36 @@ export function DashboardContent() {
       return {
         totalEmployees: 0,
         activeEmployees: 0,
+        inactiveEmployees: 0,
+        onLeaveEmployees: 0,
         avgSalary: 0,
         departments: 0,
       };
 
     const totalEmployees = data.length;
-    const activeEmployees = data.filter(
-      (emp) => emp.status === "active",
-    ).length;
-    const avgSalary = Math.round(
-      data.reduce((sum, emp) => sum + emp.salary, 0) / data.length,
-    );
-    const departments = new Set(data.map((emp) => emp.department)).size;
+    let activeEmployees = 0;
+    let inactiveEmployees = 0;
+    let onLeaveEmployees = 0;
+    let salaryTotal = 0;
+    const departments = new Set<string>();
 
-    return { totalEmployees, activeEmployees, avgSalary, departments };
+    data.forEach((emp) => {
+      salaryTotal += emp.salary;
+      departments.add(emp.department);
+
+      if (emp.status === "active") activeEmployees += 1;
+      if (emp.status === "inactive") inactiveEmployees += 1;
+      if (emp.status === "on-leave") onLeaveEmployees += 1;
+    });
+
+    return {
+      totalEmployees,
+      activeEmployees,
+      inactiveEmployees,
+      onLeaveEmployees,
+      avgSalary: Math.round(salaryTotal / totalEmployees),
+      departments: departments.size,
+    };
   }, [data]);
 
   const departmentStats = useMemo(() => {
@@ -52,23 +68,18 @@ export function DashboardContent() {
       .slice(0, 5);
   }, [data]);
 
-  const statusStats = useMemo(() => {
-    if (data.length === 0) return { active: 0, inactive: 0, onLeave: 0 };
-
-    return {
-      active: data.filter((emp) => emp.status === "active").length,
-      inactive: data.filter((emp) => emp.status === "inactive").length,
-      onLeave: data.filter((emp) => emp.status === "on-leave").length,
-    };
-  }, [data]);
+  const activePercentage =
+    stats.totalEmployees > 0
+      ? ((stats.activeEmployees / stats.totalEmployees) * 100).toFixed(1)
+      : "0.0";
 
   return (
-    <div className="space-y-8">
-      <div className="border-b border-border pb-6">
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent mb-2">
+    <div className="space-y-6 sm:space-y-8">
+      <div className="border-b border-border pb-5 sm:pb-6">
+        <h1 className="mb-2 bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-3xl font-bold text-transparent sm:text-4xl">
           Dashboard
         </h1>
-        <p className="text-muted-foreground text-lg">
+        <p className="text-base text-muted-foreground sm:text-lg">
           Employee analytics and key metrics at a glance
         </p>
       </div>
@@ -85,7 +96,7 @@ export function DashboardContent() {
           title="Active Employees"
           value={stats.activeEmployees.toLocaleString()}
           color="bg-green-500/10 text-green-600"
-          subtitle={`${((stats.activeEmployees / stats.totalEmployees) * 100).toFixed(1)}% of total`}
+          subtitle={`${activePercentage}% of total`}
         />
         <StatCard
           icon={TrendingUp}
@@ -102,16 +113,19 @@ export function DashboardContent() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="border border-border/50 rounded-lg bg-card/50 backdrop-blur-sm p-6">
-          <h2 className="text-xl font-semibold text-foreground mb-4 flex items-center gap-2">
+        <div className="rounded-lg border border-border/50 bg-card/50 p-4 backdrop-blur-sm sm:p-6">
+          <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-foreground sm:text-xl">
             <span className="text-primary">◆</span>
             Top Departments
           </h2>
           <div className="space-y-3">
             {departmentStats.map(([dept, count]) => (
-              <div key={dept} className="flex items-center justify-between">
+              <div
+                key={dept}
+                className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between"
+              >
                 <span className="text-muted-foreground">{dept}</span>
-                <div className="flex items-center gap-3 flex-1 ml-4">
+                <div className="flex flex-1 items-center gap-3 sm:ml-4">
                   <div className="flex-1 bg-muted/30 rounded-full h-2 overflow-hidden">
                     <div
                       className="bg-gradient-to-r from-primary to-primary/60 h-full"
@@ -129,27 +143,27 @@ export function DashboardContent() {
           </div>
         </div>
 
-        <div className="border border-border/50 rounded-lg bg-card/50 backdrop-blur-sm p-6">
-          <h2 className="text-xl font-semibold text-foreground mb-4 flex items-center gap-2">
+        <div className="rounded-lg border border-border/50 bg-card/50 p-4 backdrop-blur-sm sm:p-6">
+          <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-foreground sm:text-xl">
             <span className="text-primary">◆</span>
             Employment Status
           </h2>
           <div className="space-y-4">
             <StatusBar
               label="Active"
-              count={statusStats.active}
+              count={stats.activeEmployees}
               total={stats.totalEmployees}
               color="bg-green-500"
             />
             <StatusBar
               label="On Leave"
-              count={statusStats.onLeave}
+              count={stats.onLeaveEmployees}
               total={stats.totalEmployees}
               color="bg-yellow-500"
             />
             <StatusBar
               label="Inactive"
-              count={statusStats.inactive}
+              count={stats.inactiveEmployees}
               total={stats.totalEmployees}
               color="bg-red-500"
             />
@@ -157,8 +171,8 @@ export function DashboardContent() {
         </div>
       </div>
 
-      <div className="border border-border/50 rounded-lg bg-gradient-to-r from-primary/10 to-primary/5 backdrop-blur-sm p-8 text-center">
-        <h2 className="text-2xl font-bold text-foreground mb-2">
+      <div className="rounded-lg border border-border/50 bg-gradient-to-r from-primary/10 to-primary/5 p-5 text-center backdrop-blur-sm sm:p-8">
+        <h2 className="mb-2 text-xl font-bold text-foreground sm:text-2xl">
           Explore the Employee Database
         </h2>
         <p className="text-muted-foreground mb-6">
@@ -167,7 +181,7 @@ export function DashboardContent() {
         </p>
         <Link
           href="/employees"
-          className="inline-block px-8 py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors"
+          className="inline-block rounded-lg bg-primary px-6 py-3 font-medium text-primary-foreground transition-colors hover:bg-primary/90 sm:px-8"
         >
           View Database
         </Link>
@@ -192,14 +206,14 @@ function StatCard({
   subtitle,
 }: StatCardProps) {
   return (
-    <div className="border border-border/50 rounded-lg bg-card/50 backdrop-blur-sm p-6 hover:bg-card/70 transition-colors">
+    <div className="rounded-lg border border-border/50 bg-card/50 p-4 backdrop-blur-sm transition-colors hover:bg-card/70 sm:p-6">
       <div className="flex items-start justify-between mb-4">
         <div className={`p-3 rounded-lg ${color}`}>
           <Icon className="h-6 w-6" />
         </div>
       </div>
       <p className="text-muted-foreground text-sm mb-1">{title}</p>
-      <p className="text-3xl font-bold text-foreground">{value}</p>
+      <p className="text-2xl font-bold text-foreground sm:text-3xl">{value}</p>
       {subtitle && (
         <p className="text-xs text-muted-foreground mt-2">{subtitle}</p>
       )}
@@ -215,7 +229,7 @@ interface StatusBarProps {
 }
 
 function StatusBar({ label, count, total, color }: StatusBarProps) {
-  const percentage = (count / total) * 100;
+  const percentage = total > 0 ? (count / total) * 100 : 0;
 
   return (
     <div>

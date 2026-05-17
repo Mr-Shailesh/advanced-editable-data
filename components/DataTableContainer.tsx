@@ -80,17 +80,17 @@ export function DataTableContainer() {
 
   return (
     <div className="space-y-6">
-      <div className="border-b border-border pb-6">
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent mb-2">
+      <div className="border-b border-border pb-5 sm:pb-6">
+        <h1 className="mb-2 bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-3xl font-bold text-transparent sm:text-4xl">
           Employee Database
         </h1>
-        <p className="text-muted-foreground text-lg">
+        <p className="text-base text-muted-foreground sm:text-lg">
           Advanced data table with filtering, sorting, virtualization, and CSV
           export
         </p>
       </div>
 
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
         <TableToolbar onExport={handleExport} />
         <AddEmployeeForm />
       </div>
@@ -103,13 +103,18 @@ export function DataTableContainer() {
             Showing {filteredData.length.toLocaleString()} matching employees
           </p>
         </div>
-        <div className="flex rounded-md border gap-2 border-border bg-card p-1">
+        <div
+          className="grid grid-cols-1 gap-2 rounded-md border border-border bg-card p-1 sm:flex"
+          role="group"
+          aria-label="Table display mode"
+        >
           <Button
             type="button"
             variant={tableMode === "infinite" ? "default" : "ghost"}
             size="sm"
             onClick={() => handleTableModeChange("infinite")}
-            className="gap-2 cursor-pointer"
+            aria-pressed={tableMode === "infinite"}
+            className="gap-2 cursor-pointer justify-center"
           >
             <List className="h-4 w-4" />
             Infinite Scroll
@@ -119,7 +124,8 @@ export function DataTableContainer() {
             variant={tableMode === "pagination" ? "default" : "ghost"}
             size="sm"
             onClick={() => handleTableModeChange("pagination")}
-            className="gap-2 cursor-pointer"
+            aria-pressed={tableMode === "pagination"}
+            className="gap-2 cursor-pointer justify-center"
           >
             <Table2 className="h-4 w-4" />
             Pagination

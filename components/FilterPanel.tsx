@@ -89,8 +89,11 @@ export function FilterPanel() {
   if (!isFilterPanelOpen) return null;
 
   return (
-    <div className="border border-border/50 rounded-lg bg-card/50 backdrop-blur-sm p-6 space-y-6 hover:bg-card/70 transition-colors">
-      <div className="flex items-center justify-between">
+    <div
+      id="employee-filter-panel"
+      className="space-y-6 rounded-lg border border-border/50 bg-card/50 p-4 backdrop-blur-sm transition-colors hover:bg-card/70 sm:p-6"
+    >
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
           <span className="text-primary">◆</span>
           Filters
@@ -99,19 +102,21 @@ export function FilterPanel() {
           variant="ghost"
           size="sm"
           onClick={() => dispatch(resetFilters())}
+          type="button"
           className="text-xs"
         >
           Reset All
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
         <div className="space-y-3">
           <Label className="text-sm font-medium text-foreground">
             Salary Range
           </Label>
           <div className="space-y-2">
             <Input
+              aria-label="Minimum salary"
               type="number"
               placeholder="Min salary"
               value={filters.salaryMin}
@@ -119,6 +124,7 @@ export function FilterPanel() {
               className="text-sm"
             />
             <Input
+              aria-label="Maximum salary"
               type="number"
               placeholder="Max salary"
               value={filters.salaryMax}
@@ -134,12 +140,14 @@ export function FilterPanel() {
           </Label>
           <div className="space-y-2">
             <Input
+              aria-label="Hire date from"
               type="date"
               value={filters.dateFrom}
               onChange={(e) => handleDateFromChange(e.target.value)}
               className="text-sm"
             />
             <Input
+              aria-label="Hire date to"
               type="date"
               value={filters.dateTo}
               onChange={(e) => handleDateToChange(e.target.value)}

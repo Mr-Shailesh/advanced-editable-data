@@ -32,6 +32,9 @@ interface EditableTableRowProps {
   index: number;
 }
 
+const EMPTY_EDIT_VALUES: Partial<TableRow> = {};
+const EMPTY_ERRORS: Record<string, string> = {};
+
 export const EditableTableRow = memo(function EditableTableRow({
   row,
   index,
@@ -41,10 +44,10 @@ export const EditableTableRow = memo(function EditableTableRow({
     state.table.editing.editingRowIds.includes(row.id),
   );
   const editValues = useAppSelector(
-    (state) => state.table.editing.editValues[row.id] || {},
+    (state) => state.table.editing.editValues[row.id] || EMPTY_EDIT_VALUES,
   );
   const errors = useAppSelector(
-    (state) => state.table.editing.validationErrors[row.id] || {},
+    (state) => state.table.editing.validationErrors[row.id] || EMPTY_ERRORS,
   );
   const hasUnsavedChanges = useAppSelector((state) =>
     state.table.editing.unsavedChanges.includes(row.id),
@@ -93,6 +96,8 @@ export const EditableTableRow = memo(function EditableTableRow({
   if (isEditing) {
     return (
       <div
+        role="row"
+        aria-rowindex={index + 2}
         className={cn(
           "flex items-center gap-2 border-b border-border/50 px-4 py-3 text-sm bg-primary/10",
           index % 2 === 0 ? "bg-primary/5" : "bg-primary/10",
@@ -101,6 +106,7 @@ export const EditableTableRow = memo(function EditableTableRow({
         <div className="flex-1 space-y-2">
           <div className="flex gap-2">
             <input
+              aria-label={`Name for ${row.name}`}
               type="text"
               value={displayValues.name}
               onChange={(e) => handleFieldChange("name", e.target.value)}
@@ -108,6 +114,7 @@ export const EditableTableRow = memo(function EditableTableRow({
               className="w-[220px] px-2 py-1 bg-background border border-border rounded text-sm"
             />
             <input
+              aria-label={`Email for ${row.name}`}
               type="email"
               value={displayValues.email}
               onChange={(e) => handleFieldChange("email", e.target.value)}
@@ -115,6 +122,7 @@ export const EditableTableRow = memo(function EditableTableRow({
               className="w-[300px] px-2 py-1 bg-background border border-border rounded text-sm"
             />
             <input
+              aria-label={`Department for ${row.name}`}
               type="text"
               value={displayValues.department}
               onChange={(e) => handleFieldChange("department", e.target.value)}
@@ -122,6 +130,7 @@ export const EditableTableRow = memo(function EditableTableRow({
               className="w-[200px] px-2 py-1 bg-background border border-border rounded text-sm"
             />
             <select
+              aria-label={`Status for ${row.name}`}
               value={displayValues.status}
               onChange={(e) => handleFieldChange("status", e.target.value)}
               className="w-[200px] px-2 py-1 bg-background border border-border rounded text-sm"
@@ -131,6 +140,7 @@ export const EditableTableRow = memo(function EditableTableRow({
               <option value="on-leave">On Leave</option>
             </select>
             <input
+              aria-label={`Salary for ${row.name}`}
               type="number"
               value={displayValues.salary}
               onChange={(e) =>
@@ -140,6 +150,7 @@ export const EditableTableRow = memo(function EditableTableRow({
               className="w-[180px] px-2 py-1 bg-background border border-border rounded text-sm"
             />
             <input
+              aria-label={`Hire date for ${row.name}`}
               type="date"
               value={displayValues.hireDate}
               onChange={(e) => handleFieldChange("hireDate", e.target.value)}
@@ -161,14 +172,18 @@ export const EditableTableRow = memo(function EditableTableRow({
         </div>
         <div className="flex gap-2">
           <button
+            type="button"
             onClick={handleSave}
+            aria-label={`Save changes for ${row.name}`}
             className="p-1.5 text-green-400 hover:bg-green-500/20 rounded transition-colors"
             title="Save"
           >
             <Save className="h-4 w-4 cursor-pointer" />
           </button>
           <button
+            type="button"
             onClick={handleStopEditing}
+            aria-label={`Cancel editing ${row.name}`}
             className="p-1.5 text-red-400 hover:bg-red-500/20 rounded transition-colors"
             title="Cancel"
           >
@@ -181,22 +196,24 @@ export const EditableTableRow = memo(function EditableTableRow({
 
   return (
     <div
+      role="row"
+      aria-rowindex={index + 2}
       className={cn(
         "flex items-center border-b border-border/50 px-4 py-3 text-sm hover:bg-muted/40 transition-colors",
         index % 2 === 0 ? "bg-card" : "bg-muted/20",
         hasUnsavedChanges && "bg-yellow-500/10 border-yellow-500/30",
       )}
     >
-      <div className="w-[220px] truncate font-medium text-foreground">
+      <div role="cell" className="w-[220px] truncate font-medium text-foreground">
         {row.name}
       </div>
-      <div className="w-[300px] truncate text-muted-foreground">
+      <div role="cell" className="w-[300px] truncate text-muted-foreground">
         {row.email}
       </div>
-      <div className="w-[200px] truncate text-muted-foreground">
+      <div role="cell" className="w-[200px] truncate text-muted-foreground">
         {row.department}
       </div>
-      <div className="w-[200px]">
+      <div role="cell" className="w-[200px]">
         <span
           className={cn(
             "inline-block rounded-full px-2 py-1 text-xs font-medium",
@@ -210,26 +227,32 @@ export const EditableTableRow = memo(function EditableTableRow({
           {row.status}
         </span>
       </div>
-      <div className="w-[180px] text-left">${row.salary.toLocaleString()}</div>
-      <div className="w-[130px] text-left text-muted-foreground">
+      <div role="cell" className="w-[180px] text-left">
+        ${row.salary.toLocaleString()}
+      </div>
+      <div role="cell" className="w-[130px] text-left text-muted-foreground">
         {row.hireDate}
       </div>
-      <div className="flex-1 flex items-center justify-end gap-2">
+      <div role="cell" className="flex-1 flex items-center justify-end gap-2">
         {hasUnsavedChanges && (
           <span className="text-xs text-yellow-400">● Unsaved</span>
         )}
       </div>
-      <div className="flex w-[112px] justify-end gap-1">
+      <div role="cell" className="flex w-[112px] justify-end gap-1">
         <button
+          type="button"
           onClick={handleStartEditing}
+          aria-label={`Edit ${row.name}`}
           className="p-1.5 text-primary hover:bg-primary/20 rounded transition-colors cursor-pointer"
           title="Edit"
         >
           <Edit2 className="h-4 w-4" />
         </button>
         <button
+          type="button"
           onClick={handleUndo}
           disabled={!canUndo}
+          aria-label={`Undo last saved change for ${row.name}`}
           className={cn(
             "p-1.5 rounded transition-colors",
             canUndo
@@ -243,6 +266,8 @@ export const EditableTableRow = memo(function EditableTableRow({
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <button
+              type="button"
+              aria-label={`Delete ${row.name}`}
               className="p-1.5 text-red-400 hover:bg-red-500/20 rounded transition-colors cursor-pointer"
               title="Delete"
             >

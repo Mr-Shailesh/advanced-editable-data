@@ -9,7 +9,7 @@ export const metadata = {
 export default function EmployeesPage() {
   return (
     <main className="min-h-screen bg-background">
-      <div className="container mx-auto py-8 px-4">
+      <div className="container mx-auto px-3 py-5 sm:px-4 sm:py-8">
         <DataTableContainer />
       </div>
     </main>

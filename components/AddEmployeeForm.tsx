@@ -95,8 +95,10 @@ export function AddEmployeeForm({ onClose }: AddEmployeeFormProps) {
   if (!isOpen) {
     return (
       <button
+        type="button"
         onClick={handleAddEmployeeClick}
-        className="flex cursor-pointer items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium"
+        aria-haspopup="dialog"
+        className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 font-medium text-primary-foreground transition-colors hover:bg-primary/90 sm:w-auto"
       >
         <Plus className="h-4 w-4" />
         Add Employee
@@ -105,68 +107,102 @@ export function AddEmployeeForm({ onClose }: AddEmployeeFormProps) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-card border border-border rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="sticky top-0 flex items-center justify-between border-b border-border bg-muted/50 px-6 py-4">
-          <h2 className="text-lg font-semibold text-foreground">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-3 sm:p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="add-employee-title"
+    >
+      <div className="max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-lg border border-border bg-card">
+        <div className="sticky top-0 flex items-center justify-between border-b border-border bg-muted/50 px-4 py-3 sm:px-6 sm:py-4">
+          <h2
+            id="add-employee-title"
+            className="text-lg font-semibold text-foreground"
+          >
             Add New Employee
           </h2>
           <button
+            type="button"
             onClick={handleReset}
+            aria-label="Close add employee form"
             className="p-2 hover:bg-muted rounded transition-colors"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
-        <div className="p-6 space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-4 p-4 sm:p-6">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1">
+              <label
+                htmlFor="employee-name"
+                className="block text-sm font-medium text-foreground mb-1"
+              >
                 Name
               </label>
               <input
+                id="employee-name"
                 type="text"
                 value={formData.name}
                 onChange={(e) => handleInputChange("name", e.target.value)}
                 placeholder="John Doe"
+                aria-invalid={Boolean(errors.name)}
+                aria-describedby={errors.name ? "employee-name-error" : undefined}
                 className={cn(
                   "w-full px-3 py-2 bg-background border rounded-lg text-sm focus:outline-none focus:border-primary transition-colors",
                   errors.name && "border-red-500",
                 )}
               />
               {errors.name && (
-                <p className="text-xs text-red-400 mt-1">{errors.name}</p>
+                <p id="employee-name-error" className="text-xs text-red-400 mt-1">
+                  {errors.name}
+                </p>
               )}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1">
+              <label
+                htmlFor="employee-email"
+                className="block text-sm font-medium text-foreground mb-1"
+              >
                 Email
               </label>
               <input
+                id="employee-email"
                 type="email"
                 value={formData.email}
                 onChange={(e) => handleInputChange("email", e.target.value)}
                 placeholder="john@example.com"
+                aria-invalid={Boolean(errors.email)}
+                aria-describedby={errors.email ? "employee-email-error" : undefined}
                 className={cn(
                   "w-full px-3 py-2 bg-background border rounded-lg text-sm focus:outline-none focus:border-primary transition-colors",
                   errors.email && "border-red-500",
                 )}
               />
               {errors.email && (
-                <p className="text-xs text-red-400 mt-1">{errors.email}</p>
+                <p id="employee-email-error" className="text-xs text-red-400 mt-1">
+                  {errors.email}
+                </p>
               )}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1">
+              <label
+                htmlFor="employee-department"
+                className="block text-sm font-medium text-foreground mb-1"
+              >
                 Department
               </label>
               <select
+                id="employee-department"
                 value={formData.department}
                 onChange={(e) =>
                   handleInputChange("department", e.target.value)
+                }
+                aria-invalid={Boolean(errors.department)}
+                aria-describedby={
+                  errors.department ? "employee-department-error" : undefined
                 }
                 className={cn(
                   "w-full px-3 py-2 bg-background border rounded-lg text-sm focus:outline-none focus:border-primary transition-colors",
@@ -181,15 +217,24 @@ export function AddEmployeeForm({ onClose }: AddEmployeeFormProps) {
                 <option value="Finance">Finance</option>
               </select>
               {errors.department && (
-                <p className="text-xs text-red-400 mt-1">{errors.department}</p>
+                <p
+                  id="employee-department-error"
+                  className="text-xs text-red-400 mt-1"
+                >
+                  {errors.department}
+                </p>
               )}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1">
+              <label
+                htmlFor="employee-status"
+                className="block text-sm font-medium text-foreground mb-1"
+              >
                 Status
               </label>
               <select
+                id="employee-status"
                 value={formData.status}
                 onChange={(e) => handleInputChange("status", e.target.value)}
                 className="w-full px-3 py-2 bg-background border rounded-lg text-sm focus:outline-none focus:border-primary transition-colors"
@@ -201,52 +246,77 @@ export function AddEmployeeForm({ onClose }: AddEmployeeFormProps) {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1">
+              <label
+                htmlFor="employee-salary"
+                className="block text-sm font-medium text-foreground mb-1"
+              >
                 Salary
               </label>
               <input
+                id="employee-salary"
                 type="number"
                 value={formData.salary}
                 onChange={(e) => handleInputChange("salary", e.target.value)}
                 placeholder="50000"
+                aria-invalid={Boolean(errors.salary)}
+                aria-describedby={
+                  errors.salary ? "employee-salary-error" : undefined
+                }
                 className={cn(
                   "w-full px-3 py-2 bg-background border rounded-lg text-sm focus:outline-none focus:border-primary transition-colors",
                   errors.salary && "border-red-500",
                 )}
               />
               {errors.salary && (
-                <p className="text-xs text-red-400 mt-1">{errors.salary}</p>
+                <p id="employee-salary-error" className="text-xs text-red-400 mt-1">
+                  {errors.salary}
+                </p>
               )}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1">
+              <label
+                htmlFor="employee-hire-date"
+                className="block text-sm font-medium text-foreground mb-1"
+              >
                 Hire Date
               </label>
               <input
+                id="employee-hire-date"
                 type="date"
                 value={formData.hireDate}
                 onChange={(e) => handleInputChange("hireDate", e.target.value)}
+                aria-invalid={Boolean(errors.hireDate)}
+                aria-describedby={
+                  errors.hireDate ? "employee-hire-date-error" : undefined
+                }
                 className={cn(
                   "w-full px-3 py-2 bg-background border rounded-lg text-sm focus:outline-none focus:border-primary transition-colors",
                   errors.hireDate && "border-red-500",
                 )}
               />
               {errors.hireDate && (
-                <p className="text-xs text-red-400 mt-1">{errors.hireDate}</p>
+                <p
+                  id="employee-hire-date-error"
+                  className="text-xs text-red-400 mt-1"
+                >
+                  {errors.hireDate}
+                </p>
               )}
             </div>
           </div>
         </div>
 
-        <div className="sticky bottom-0 flex gap-3 border-t border-border bg-muted/50 px-6 py-4 justify-end">
+        <div className="sticky bottom-0 flex flex-col-reverse gap-3 border-t border-border bg-muted/50 px-4 py-4 sm:flex-row sm:justify-end sm:px-6">
           <button
+            type="button"
             onClick={handleReset}
-            className="px-4 py-2 cursor-pointer text-foreground hover:bg-muted rounded-lg transition-colors"
+            className="cursor-pointer rounded-lg px-4 py-2 text-foreground transition-colors hover:bg-muted"
           >
             Cancel
           </button>
           <button
+            type="button"
             onClick={handleSubmit}
             className="px-4 py-2 cursor-pointer bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium"
           >

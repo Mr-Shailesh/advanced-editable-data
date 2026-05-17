@@ -44,15 +44,16 @@ export function TablePagination({
   }, [currentPage, dispatch, checkUnsavedChanges]);
 
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6 pt-4 border-t border-border">
+    <div className="mt-6 flex flex-col items-stretch gap-4 border-t border-border pt-4 md:flex-row md:items-center md:justify-between">
       <div className="text-sm text-muted-foreground">
         Showing {Math.min((currentPage - 1) * pageSize + 1, totalRows)} to{" "}
         {Math.min(currentPage * pageSize, totalRows)} of {totalRows} results
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         <span className="text-sm text-muted-foreground">Rows per page:</span>
         <select
+          aria-label="Rows per page"
           value={pageSize}
           onChange={(e) => handlePageSizeChange(e.target.value)}
           className="px-2 py-1 rounded border border-border bg-background text-sm text-foreground"
@@ -65,12 +66,14 @@ export function TablePagination({
         </select>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center justify-between gap-2 sm:justify-start">
         <Button
+          type="button"
           variant="outline"
           size="sm"
           onClick={handlePreviousPage}
           disabled={currentPage === 1}
+          aria-label="Previous page"
         >
           <ChevronLeft className="h-4 w-4" />
         </Button>
@@ -80,10 +83,12 @@ export function TablePagination({
         </div>
 
         <Button
+          type="button"
           variant="outline"
           size="sm"
           onClick={handleNextPage}
           disabled={currentPage === totalPages}
+          aria-label="Next page"
         >
           <ChevronRight className="h-4 w-4" />
         </Button>
