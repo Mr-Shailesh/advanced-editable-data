@@ -56,7 +56,7 @@ export function TableToolbar({ onExport }: TableToolbarProps) {
             variant="default"
             size="sm"
             onClick={() => dispatch(saveAllRows())}
-            className="flex items-center gap-2 bg-green-600 hover:bg-green-700"
+            className="flex items-center gap-2 bg-green-600 hover:bg-green-700 cursor-pointer"
           >
             <Save className="h-4 w-4" />
             Save All ({unsavedCount})
